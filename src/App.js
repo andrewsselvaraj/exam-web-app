@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import SchoolInfo from "./pages/SchoolInfo";
 
 const checkIfUserIsAuthenticated = () => {
   const userInfo = localStorage.getItem('userInfo')
@@ -46,6 +47,14 @@ export default function App() {
         element={
           <PrivateRoute>
             <Dashboard />
+          </PrivateRoute>
+        }
+      />
+       <Route
+        path="/school-info"
+        element={
+          <PrivateRoute>
+            <SchoolInfo />
           </PrivateRoute>
         }
       />
