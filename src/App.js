@@ -1,25 +1,62 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route, Navigate } from "react-router-dom";
+import LoginPage from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const checkIfUserIsAuthenticated = () => {
+  const userInfo = localStorage.getItem('userInfo')
+  if (userInfo) {
+    return true;
+  }
+  return false;
 }
 
-export default App;
+function PrivateRoute({ children }) {
+  const isAuthenticated = checkIfUserIsAuthenticated();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
+  return children;
+}
+
+function PublicOnlyRoute({ children }) {
+  const isAuthenticated = checkIfUserIsAuthenticated();
+
+  if (isAuthenticated) {
+    return <Navigate to="/" />;
+  }
+
+  return children;
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route
+        path="/login"
+        element={
+          <PublicOnlyRoute>
+            <LoginPage />
+          </PublicOnlyRoute>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/"
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
+    </Routes>
+  );
+}
